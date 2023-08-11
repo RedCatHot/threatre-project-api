@@ -1,4 +1,5 @@
 from django.db import models
+from rest_framework.exceptions import ValidationError
 
 from user.models import User
 
@@ -65,8 +66,19 @@ class Performance(models.Model):
 class Ticket(models.Model):
     row = models.PositiveIntegerField()
     seat = models.PositiveIntegerField()
-    performance = models.ForeignKey(Performance, on_delete=models.CASCADE)
-    reservation = models.ForeignKey(Reservation, on_delete=models.CASCADE)
+    performance = models.ForeignKey(Performance, on_delete=models.CASCADE, related_name="tickets")
+    reservation = models.ForeignKey(Reservation, on_delete=models.CASCADE, related_name="tickets")
+
+    def clean(self):
+        if not (1 <= self.seat <= self.performance.theatre_hall.seats_in_row):
+            raise ValidationError(
+                {
+                    "seat": f"seat must be "
+                            f"in available range: "
+                            f"(1, {self.performance.theatre_hall.seats_in_row}), not "
+                            f"{self.seat}"
+                }
+            )
 
     def __str__(self):
         return f"Ticket {self.row}-{self.seat} for {self.performance.play.title}"
