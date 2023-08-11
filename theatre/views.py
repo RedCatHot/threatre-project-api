@@ -1,5 +1,7 @@
 from django.db.models import F, Count
 from rest_framework import viewsets
+from rest_framework.pagination import PageNumberPagination
+
 from .models import (
     TheatreHall,
     Genre,
@@ -18,7 +20,7 @@ from .serializers import (
     ReservationSerializer,
     TicketSerializer,
     PlayListSerializer,
-    PlayDetailSerializer, PerformanceListSerializer, PerformanceDetailSerializer,
+    PlayDetailSerializer, PerformanceListSerializer, PerformanceDetailSerializer, ReservationListSerializer,
 )
 
 
@@ -106,12 +108,32 @@ class PerformanceViewSet(viewsets.ModelViewSet):
         return serializer_class
 
 
+class ReservationPagination(PageNumberPagination):
+    page_size = 2
+    page_size_query_param = "page_size"
+    max_page_size = 100
+
+
 class ReservationViewSet(viewsets.ModelViewSet):
     queryset = Reservation.objects.all()
     serializer_class = ReservationSerializer
 
     def get_queryset(self):
-        return self.queryset.filter(user=self.request.user)
+        queryset = self.queryset.filter(user=self.request.user)
+
+        if self.action == "list":
+            queryset = queryset.prefetch_related(
+                "tickets__performance__theatre_hall",
+                "tickets__performance__play"
+            )
+
+        return queryset
+
+    def get_serializer_class(self):
+        if self.action == "list":
+            return ReservationListSerializer
+
+        return ReservationSerializer
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)

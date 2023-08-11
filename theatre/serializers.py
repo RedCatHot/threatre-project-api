@@ -159,3 +159,7 @@ class PerformanceDetailSerializer(PerformanceSerializer):
             "theatre_hall",
             "taken_places",
         )
+
+
+class ReservationListSerializer(ReservationSerializer):
+    tickets = TicketListSerializer(many=True, read_only=True)
