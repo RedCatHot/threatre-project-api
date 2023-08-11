@@ -55,8 +55,8 @@ class Play(models.Model):
 
 class TheatreHall(models.Model):
     name = models.CharField(max_length=100)
-    rows = models.PositiveIntegerField()
-    seats_in_row = models.PositiveIntegerField()
+    rows = models.IntegerField()
+    seats_in_row = models.IntegerField()
 
     class Meta:
         ordering = ["name"]
@@ -82,8 +82,8 @@ class Performance(models.Model):
 
 
 class Ticket(models.Model):
-    row = models.PositiveIntegerField()
-    seat = models.PositiveIntegerField()
+    row = models.IntegerField()
+    seat = models.IntegerField()
     performance = models.ForeignKey(
         Performance, on_delete=models.CASCADE, related_name="tickets"
     )
@@ -96,13 +96,20 @@ class Ticket(models.Model):
         unique_together = ("row", "seat", "performance")
 
     def clean(self):
-        if not (1 <= self.seat <= self.performance.theatre_hall.seats_in_row):
+        for ticket_attr_value, ticket_attr_name, theatre_hall_attr_name in [
+            (self.row, "row", "rows"),
+            (self.seat, "seat", "seats_in_row"),
+        ]:
+            count_attrs = getattr(
+                self.performance.theatre_hall, theatre_hall_attr_name
+            )
+        if not (1 <= ticket_attr_value <= count_attrs):
             raise ValidationError(
                 {
-                    "seat": f"seat must be "
-                    f"in available range: "
-                    f"(1, {self.performance.theatre_hall.seats_in_row}), not "
-                    f"{self.seat}"
+                    ticket_attr_name: f"{ticket_attr_name} "
+                                      f"number must be in available range: "
+                                      f"(1, {theatre_hall_attr_name}): "
+                                      f"(1, {count_attrs})"
                 }
             )
 
