@@ -48,3 +48,5 @@ class TicketSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ticket
         fields = '__all__'
+
+# I forgot to commit views and serializers, so....
