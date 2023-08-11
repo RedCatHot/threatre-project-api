@@ -11,7 +11,7 @@ from .views import (
 )
 
 router = routers.DefaultRouter()
-router.register(r"theatrehalls", TheatreHallViewSet)
+router.register(r"theatre_halls", TheatreHallViewSet)
 router.register(r"genres", GenreViewSet)
 router.register(r"actors", ActorViewSet)
 router.register(r"plays", PlayViewSet)

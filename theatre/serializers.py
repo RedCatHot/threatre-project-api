@@ -21,12 +21,13 @@ class ActorSerializer(serializers.ModelSerializer):
 
 
 class PlaySerializer(serializers.ModelSerializer):
+
     class Meta:
         model = Play
-        fields = "__all__"
+        fields = ("id", "title", "description", "genres", "actors")
 
 
-class PlayListSerializer(serializers.ModelSerializer):
+class PlayListSerializer(PlaySerializer):
     genres = serializers.SlugRelatedField(many=True, read_only=True, slug_field="name")
     actors = serializers.SlugRelatedField(
         many=True,
@@ -39,7 +40,7 @@ class PlayListSerializer(serializers.ModelSerializer):
         fields = ("id", "title", "description", "genres", "actors")
 
 
-class PlayDetailSerializer(serializers.ModelSerializer):
+class PlayDetailSerializer(PlaySerializer):
     genres = GenreSerializer(many=True, read_only=True)
     actors = ActorSerializer(many=True, read_only=True)
 
@@ -49,12 +50,47 @@ class PlayDetailSerializer(serializers.ModelSerializer):
 
 
 class PerformanceSerializer(serializers.ModelSerializer):
-    play = PlaySerializer()
-    theatre_hall = TheatreHallSerializer()
 
     class Meta:
         model = Performance
         fields = "__all__"
+
+
+class PerformanceListSerializer(serializers.ModelSerializer):
+    play_title = serializers.CharField(source="play.title", read_only=True)
+    theatre_hall_name = serializers.CharField(
+        source="theatre_hall.name",
+        read_only=True
+    )
+    theatre_hall_capacity = serializers.IntegerField(
+        source="theatre_hall.capacity",
+        read_only=True
+    )
+
+    class Meta:
+        model = Performance
+        fields = (
+            "id",
+            "show_time",
+            "play_title",
+            "theatre_hall_name",
+            "theatre_hall_capacity",
+        )
+
+
+class PerformanceDetailSerializer(PerformanceSerializer):
+    play = PlayListSerializer(many=False, read_only=True)
+    theatre_hall = TheatreHallSerializer(many=False, read_only=True)
+
+    class Meta:
+        model = Performance
+        fields = (
+            "id",
+            "show_time",
+            "play_title",
+            "theatre_hall_name",
+            "theatre_hall_capacity",
+        )
 
 
 class ReservationSerializer(serializers.ModelSerializer):
