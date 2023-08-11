@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import TheatreHall, Genre, Actor, Play, Performance, User, Reservation, Ticket
+from .models import TheatreHall, Genre, Actor, Play, Performance, Reservation, Ticket
 
 
 class TheatreHallSerializer(serializers.ModelSerializer):
@@ -21,12 +21,32 @@ class ActorSerializer(serializers.ModelSerializer):
 
 
 class PlaySerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Play
+        fields = '__all__'
+
+
+class PlayListSerializer(serializers.ModelSerializer):
+    genres = serializers.SlugRelatedField(many=True, read_only=True, slug_field="name")
+    actors = serializers.SlugRelatedField(
+        many=True,
+        read_only=True,
+        slug_field="full_name",
+    )
+
+    class Meta:
+        model = Play
+        fields = ("id", "title", "description", "genres", "actors")
+
+
+class PlayDetailSerializer(serializers.ModelSerializer):
     genres = GenreSerializer(many=True, read_only=True)
     actors = ActorSerializer(many=True, read_only=True)
 
     class Meta:
         model = Play
-        fields = '__all__'
+        fields = ("id", "title", "description", "genres", "actors")
 
 
 class PerformanceSerializer(serializers.ModelSerializer):
