@@ -11,16 +11,16 @@ from .views import (
 )
 
 router = routers.DefaultRouter()
-router.register(r'theatrehalls', TheatreHallViewSet)
-router.register(r'genres', GenreViewSet)
-router.register(r'actors', ActorViewSet)
-router.register(r'plays', PlayViewSet)
-router.register(r'performances', PerformanceViewSet)
-router.register(r'reservations', ReservationViewSet)
-router.register(r'tickets', TicketViewSet)
+router.register(r"theatrehalls", TheatreHallViewSet)
+router.register(r"genres", GenreViewSet)
+router.register(r"actors", ActorViewSet)
+router.register(r"plays", PlayViewSet)
+router.register(r"performances", PerformanceViewSet)
+router.register(r"reservations", ReservationViewSet)
+router.register(r"tickets", TicketViewSet)
 
 urlpatterns = [
-    path('', include(router.urls)),
+    path("", include(router.urls)),
 ]
 
 
