@@ -145,7 +145,8 @@ class PerformanceViewSet(viewsets.ModelViewSet):
         queryset = self.queryset
 
         if self.action == "list":
-            queryset = queryset.select_related("play", "theatre_hall").annotate(
+            queryset = queryset.select_related(
+                "play", "theatre_hall").annotate(
                 tickets_available=F("theatre_hall__seats_in_row")
                 * F("theatre_hall__rows")
                 - Count("tickets")
@@ -181,7 +182,8 @@ class ReservationViewSet(viewsets.ModelViewSet):
 
         if self.action == "list":
             queryset = queryset.prefetch_related(
-                "tickets__performance__theatre_hall", "tickets__performance__play"
+                "tickets__performance__theatre_hall",
+                "tickets__performance__play"
             )
 
         return queryset

@@ -113,7 +113,9 @@ class Ticket(models.Model):
             (self.row, "row", "rows"),
             (self.seat, "seat", "seats_in_row"),
         ]:
-            count_attrs = getattr(self.performance.theatre_hall, theatre_hall_attr_name)
+            count_attrs = getattr(
+                self.performance.theatre_hall, theatre_hall_attr_name
+            )
         if not (1 <= ticket_attr_value <= count_attrs):
             raise ValidationError(
                 {
@@ -125,10 +127,17 @@ class Ticket(models.Model):
             )
 
     def save(
-        self, force_insert=False, force_update=False, using=None, update_fields=None
+        self,
+        force_insert=False,
+        force_update=False,
+        using=None,
+        update_fields=None
     ):
         self.full_clean()
-        super(Ticket, self).save(force_insert, force_update, using, update_fields)
+        super(Ticket, self).save(
+            force_insert, force_update, using, update_fields
+        )
 
     def __str__(self):
-        return f"Ticket {self.row}-{self.seat} for {self.performance.play.title}"
+        return (f"Ticket {self.row}-{self.seat} "
+                f"for {self.performance.play.title}")
