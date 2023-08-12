@@ -113,16 +113,14 @@ class Ticket(models.Model):
             (self.row, "row", "rows"),
             (self.seat, "seat", "seats_in_row"),
         ]:
-            count_attrs = getattr(
-                self.performance.theatre_hall, theatre_hall_attr_name
-            )
+            count_attrs = getattr(self.performance.theatre_hall, theatre_hall_attr_name)
         if not (1 <= ticket_attr_value <= count_attrs):
             raise ValidationError(
                 {
                     ticket_attr_name: f"{ticket_attr_name} "
-                                      f"number must be in available range: "
-                                      f"(1, {theatre_hall_attr_name}): "
-                                      f"(1, {count_attrs})"
+                    f"number must be in available range: "
+                    f"(1, {theatre_hall_attr_name}): "
+                    f"(1, {count_attrs})"
                 }
             )
 
@@ -131,7 +129,6 @@ class Ticket(models.Model):
     ):
         self.full_clean()
         super(Ticket, self).save(force_insert, force_update, using, update_fields)
-
 
     def __str__(self):
         return f"Ticket {self.row}-{self.seat} for {self.performance.play.title}"

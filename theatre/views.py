@@ -26,7 +26,10 @@ from .serializers import (
     ReservationSerializer,
     TicketSerializer,
     PlayListSerializer,
-    PlayDetailSerializer, PerformanceListSerializer, PerformanceDetailSerializer, ReservationListSerializer,
+    PlayDetailSerializer,
+    PerformanceListSerializer,
+    PerformanceDetailSerializer,
+    ReservationListSerializer,
     PlayImageSerializer,
 )
 
@@ -95,7 +98,7 @@ class PlayViewSet(viewsets.ModelViewSet):
         methods=["POST"],
         detail=True,
         url_path="upload-image",
-        permission_classes=[IsAdminUser]
+        permission_classes=[IsAdminUser],
     )
     def upload_image(self, request, pk=None):
         play = self.get_object()
@@ -142,12 +145,10 @@ class PerformanceViewSet(viewsets.ModelViewSet):
         queryset = self.queryset
 
         if self.action == "list":
-            queryset = queryset.select_related(
-                "play", "theatre_hall"
-            ).annotate(
-                tickets_available=F(
-                    "theatre_hall__seats_in_row"
-                ) * F("theatre_hall__rows") - Count("tickets")
+            queryset = queryset.select_related("play", "theatre_hall").annotate(
+                tickets_available=F("theatre_hall__seats_in_row")
+                * F("theatre_hall__rows")
+                - Count("tickets")
             )
 
         return queryset
@@ -180,8 +181,7 @@ class ReservationViewSet(viewsets.ModelViewSet):
 
         if self.action == "list":
             queryset = queryset.prefetch_related(
-                "tickets__performance__theatre_hall",
-                "tickets__performance__play"
+                "tickets__performance__theatre_hall", "tickets__performance__play"
             )
 
         return queryset

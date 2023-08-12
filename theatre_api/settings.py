@@ -138,15 +138,12 @@ REST_FRAMEWORK = {
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     "DEFAULT_THROTTLE_CLASSES": [
         "rest_framework.throttling.AnonRateThrottle",
-        "rest_framework.throttling.UserRateThrottle"
+        "rest_framework.throttling.UserRateThrottle",
     ],
-    "DEFAULT_THROTTLE_RATES": {
-        "anon": "10/minute",
-        "user": "30/minute"
-    },
+    "DEFAULT_THROTTLE_RATES": {"anon": "10/minute", "user": "30/minute"},
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
-    )
+    ),
 }
 
 SPECTACULAR_SETTINGS = {
@@ -159,5 +156,5 @@ SPECTACULAR_SETTINGS = {
         "defaultModelRendering": "model",
         "defaultModelsExpandDepth": 2,
         "defaultModelExpandDepth": 2,
-    }
+    },
 }
