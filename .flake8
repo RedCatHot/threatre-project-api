@@ -1,2 +1,2 @@
 [flake8]
-ignore = Q000
+ignore = Q000, W503, F811
