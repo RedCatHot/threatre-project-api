@@ -64,9 +64,9 @@ Theatre API Service is designed to streamline the management of theatre-related 
    ```
 
 ## Schema
-![db_schema.png](media/rest_db.jpg)
+![db_schema.jpg](media/rest_db.jpg)
 
 ## Presentation
-![swagger.png](media/swagger.jpg)
-![trip_list.png](media/play_list.jpg)
-![api_root.png](media/api_root.jpg)
+![swagger.jpg](media/swagger.jpg)
+![trip_list.jpg](media/play_list.jpg)
+![api_root.jpg](media/api_root.jpg)
